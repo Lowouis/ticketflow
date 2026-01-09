@@ -7,6 +7,7 @@ export interface TicketDto {
   description: string;
   status: TicketStatus;
   priority: TicketPriority;
+  mergeProblem: bigint;
   createdAt: string;
   updatedAt: string;
 }
