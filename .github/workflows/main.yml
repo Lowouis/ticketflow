@@ -85,19 +85,17 @@ jobs:
           npx playwright install --with-deps
 
       - name: Start services and Wait
-        run: |
-          # Démarrage du Backend
+        run: | 
+  
           cd backend
           nohup mvn -B -ntp spring-boot:run -Dspring-boot.run.profiles=test > /tmp/backend.log 2>&1 &
-          
-          # Démarrage du Frontend (Preview)
+
           cd ../frontend
           npm run build
           nohup npm run preview -- --host 127.0.0.1 --port 5173 > /tmp/frontend.log 2>&1 &
-          
-          # Attente que les ports soient ouverts (évite l'échec de redirection du test)
+      
           echo "Waiting for services to be ready..."
-          npx wait-on http://127.0.0.1:8080/health --timeout 90000 || (cat /tmp/backend.log && exit 1)
+          npx wait-on http://127.0.0.1:8080/actuator/health --timeout 90000 || (cat /tmp/backend.log && exit 1)
           npx wait-on http://127.0.0.1:5173 --timeout 60000 || (cat /tmp/frontend.log && exit 1)
 
       - name: Run E2E
